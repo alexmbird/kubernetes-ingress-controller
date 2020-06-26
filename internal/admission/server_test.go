@@ -8,6 +8,7 @@ import (
 
 	configuration "github.com/kong/kubernetes-ingress-controller/pkg/apis/configuration/v1"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	admission "k8s.io/api/admission/v1beta1"
 	corev1 "k8s.io/api/core/v1"
@@ -41,6 +42,7 @@ func TestServeHTTPBasic(t *testing.T) {
 	res := httptest.NewRecorder()
 	server := Server{
 		Validator: KongFakeValidator{},
+		Logger:    logrus.New(),
 	}
 	handler := http.HandlerFunc(server.ServeHTTP)
 
@@ -237,6 +239,7 @@ func TestValidateKongConsumerOnError(t *testing.T) {
 		Validator: KongFakeValidator{
 			Error: errors.New("error making API call to kong"),
 		},
+		Logger: logrus.New(),
 	}
 	handler := http.HandlerFunc(server.ServeHTTP)
 	body := `
@@ -272,6 +275,7 @@ func TestValidateKongConsumerOnUsernameChangeError(t *testing.T) {
 		Validator: KongFakeValidator{
 			Error: errors.New("error making API call to kong"),
 		},
+		Logger: logrus.New(),
 	}
 	handler := http.HandlerFunc(server.ServeHTTP)
 	body := `
@@ -314,6 +318,7 @@ func TestUnknownResource(t *testing.T) {
 			Result:  false,
 			Message: "consumer is not valid",
 		},
+		Logger: logrus.New(),
 	}
 	handler := http.HandlerFunc(server.ServeHTTP)
 	body := `
@@ -349,6 +354,7 @@ func TestValidateKongPlugin(t *testing.T) {
 		Validator: KongFakeValidator{
 			Result: true,
 		},
+		Logger: logrus.New(),
 	}
 	handler := http.HandlerFunc(server.ServeHTTP)
 	body := `
