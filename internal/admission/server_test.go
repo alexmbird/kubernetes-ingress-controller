@@ -2,12 +2,12 @@ package admission
 
 import (
 	"bytes"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	configuration "github.com/kong/kubernetes-ingress-controller/pkg/apis/configuration/v1"
-	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	admission "k8s.io/api/admission/v1beta1"
@@ -237,7 +237,7 @@ func TestValidateKongConsumerOnError(t *testing.T) {
 	res := httptest.NewRecorder()
 	server := Server{
 		Validator: KongFakeValidator{
-			Error: errors.New("error making API call to kong"),
+			Error: fmt.Errorf("error making API call to kong"),
 		},
 		Logger: logrus.New(),
 	}
@@ -273,7 +273,7 @@ func TestValidateKongConsumerOnUsernameChangeError(t *testing.T) {
 	res := httptest.NewRecorder()
 	server := Server{
 		Validator: KongFakeValidator{
-			Error: errors.New("error making API call to kong"),
+			Error: fmt.Errorf("error making API call to kong"),
 		},
 		Logger: logrus.New(),
 	}
